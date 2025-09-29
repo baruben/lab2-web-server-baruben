@@ -10,3 +10,7 @@ build
 
 .idea
 .DS_Store
+localhost.crt
+localhost.key
+src/main/kotlin/es/unizar/webeng/lab2/TimeComponent.kt
+src/test/kotlin/unit/controller/TimeControllerUnitTests.kt
