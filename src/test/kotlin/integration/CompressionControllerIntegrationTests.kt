@@ -61,4 +61,18 @@ class CompressionIntegrationTests {
         assertThat(response.headers["Content-Encoding"]).isNull()
         assertThat(response.headers["Content-Length"]).isNotNull()
     }
+
+    @Test
+    fun `should not compress text event stream`() {
+        val headers = HttpHeaders().apply {
+            set("Accept-Encoding", "gzip")
+        }
+        val entity = HttpEntity<String>(headers)
+
+        val response: ResponseEntity<String> =
+            restTemplate.exchange("/sse", HttpMethod.GET, entity, String::class.java)
+
+        assertThat(response.headers["Content-Encoding"]).isNull()
+        assertThat(response.headers["Content-Type"]).contains("text/event-stream")
+    }
 }
