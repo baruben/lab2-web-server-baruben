@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class ErrorHandlerIntegrationTests {
+public class ErrorControllerIntegrationTests {
 
     @LocalServerPort
     private var port: Int = 0
@@ -20,25 +20,44 @@ public class ErrorHandlerIntegrationTests {
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
-    @Test
-    fun `should return custom error page with error 404`() {
+    private fun testErrorPage(path: String, expectedStatus: HttpStatus, expectedMessage: String) {
         val headers = org.springframework.http.HttpHeaders()
         headers.add("Accept", "text/html")
         val entity = org.springframework.http.HttpEntity<String>(headers)
 
         val response = restTemplate.exchange(
-            "http://localhost:$port/ruta-inexistente",
+            "http://localhost:$port$path",
             org.springframework.http.HttpMethod.GET,
             entity,
             String::class.java
         )
 
-        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        assertThat(response.statusCode).isEqualTo(expectedStatus)
         assertThat(response.body).contains("<!DOCTYPE html>")
         assertThat(response.body).contains("<title>Error</title>")
         assertThat(response.body).contains("<h1>Error")
-        assertThat(response.body).contains("404</span>")
-        assertThat(response.body).contains("<p>Not Found</p>")
+        assertThat(response.body).contains("${expectedStatus.value()}")
+        assertThat(response.body).contains("<p>$expectedMessage</p>")
         assertThat(response.body).contains("<a href=\"/\">Volver al inicio</a>")
+    }
+
+    @Test
+    fun `should return custom 401 error page`() {
+        testErrorPage("/test/401", HttpStatus.UNAUTHORIZED, "Unauthorized")
+    }
+    
+    @Test
+    fun `should return custom 403 error page`() {
+        testErrorPage("/test/403", HttpStatus.FORBIDDEN, "Forbidden")
+    }
+
+    @Test
+    fun `should return custom 404 error page`() {
+        testErrorPage("/test/404", HttpStatus.NOT_FOUND, "Not Found")
+    }
+
+    @Test
+    fun `should return custom 500 error page`() {
+        testErrorPage("/test/500", HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error")
     }
 }

@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 @RestController
-class TestController {
+class CompressionController {
 
-    @GetMapping("/small")
+    @GetMapping("/test/small")
     fun smallResponse(): String = "x"
 
-    @GetMapping("/large")
+    @GetMapping("/test/large")
     fun largeResponse(): String = "x".repeat(5000)
 
-    @GetMapping("/sse", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    @GetMapping("/test/sse", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun streamResponse(): SseEmitter {
         val emitter = SseEmitter()
         Thread {

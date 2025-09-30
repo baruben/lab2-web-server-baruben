@@ -28,7 +28,7 @@ class CompressionIntegrationTests {
         val entity = HttpEntity<String>(headers)
 
         val response: ResponseEntity<String> =
-            restTemplate.exchange("/small", HttpMethod.GET, entity, String::class.java)
+            restTemplate.exchange("/test/small", HttpMethod.GET, entity, String::class.java)
 
         assertThat(response.headers["Content-Encoding"]).isNull()
         assertThat(response.headers["Content-Length"]).isNotNull()
@@ -43,7 +43,7 @@ class CompressionIntegrationTests {
         val entity = HttpEntity<String>(headers)
 
         val response: ResponseEntity<ByteArray> =
-            restTemplate.exchange("/large", HttpMethod.GET, entity, ByteArray::class.java)
+            restTemplate.exchange("/test/large", HttpMethod.GET, entity, ByteArray::class.java)
 
         assertThat(response.headers["Content-Encoding"]).contains("gzip")
         assertThat(response.headers["Vary"]).contains("accept-encoding")
@@ -56,7 +56,7 @@ class CompressionIntegrationTests {
     @Test
     fun `should not compress large response without gzip request header`() {
         val response: ResponseEntity<String> =
-            restTemplate.getForEntity("/large", String::class.java)
+            restTemplate.getForEntity("/test/large", String::class.java)
 
         assertThat(response.headers["Content-Encoding"]).isNull()
         assertThat(response.headers["Content-Length"]).isNotNull()
@@ -70,7 +70,7 @@ class CompressionIntegrationTests {
         val entity = HttpEntity<String>(headers)
 
         val response: ResponseEntity<String> =
-            restTemplate.exchange("/sse", HttpMethod.GET, entity, String::class.java)
+            restTemplate.exchange("/test/sse", HttpMethod.GET, entity, String::class.java)
 
         assertThat(response.headers["Content-Encoding"]).isNull()
         assertThat(response.headers["Content-Type"]).contains("text/event-stream")
