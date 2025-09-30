@@ -23,6 +23,8 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.thymeleaf)
     implementation(libs.jackson.module.kotlin)
+    implementation(libs.jackson.dataformat.xml)
+    implementation(libs.jackson.datatype.jsr310)
 
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.mockito.kotlin)
